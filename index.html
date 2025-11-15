@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Career Ready AI – Prototype</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-header">
+      <h1>Career Ready AI</h1>
+      <p class="subtitle">Demo Prototype (PA3)</p>
+    </header>
+
+    <!-- LOGIN SCREEN -->
+    <section id="screen-login" class="screen active">
+      <h2>Secure Login</h2>
+      <div class="card">
+        <label>
+          Email
+          <input type="email" id="login-email" placeholder="student@university.edu" />
+        </label>
+        <label>
+          Password
+          <input type="password" id="login-password" placeholder="••••••••" />
+        </label>
+        <p id="login-error" class="error"></p>
+        <button id="login-button">Login</button>
+        <p class="note">
+          Demo note: In the final system, this would use Firebase Auth + 2FA.
+        </p>
+      </div>
+    </section>
+
+    <!-- 2FA SCREEN -->
+    <section id="screen-2fa" class="screen">
+      <h2>Two-Factor Verification</h2>
+      <div class="card">
+        <p>Enter the 6-digit code sent to your email.</p>
+        <input type="text" id="code-2fa" placeholder="123456" maxlength="6" />
+        <p id="twofa-error" class="error"></p>
+        <button id="verify-2fa-button">Verify Code</button>
+        <button class="secondary" id="back-to-login-button">Back to Login</button>
+        <p class="note">
+          Demo note: For this prototype, use <strong>123456</strong> as the valid code.
+        </p>
+      </div>
+    </section>
+
+    <!-- RESUME + AI FEEDBACK SCREEN -->
+    <section id="screen-resume" class="screen">
+      <div class="toolbar">
+        <button id="logout-button" class="secondary small">Logout</button>
+      </div>
+
+      <h2>AI Resume Feedback</h2>
+      <div class="card">
+        <label for="resume-file">Upload Resume (Demo)</label>
+        <input
+          type="file"
+          id="resume-file"
+          accept=".pdf,.doc,.docx,.txt"
+        />
+        <p id="resume-error" class="error"></p>
+
+        <button id="ai-feedback-button">Get AI Feedback</button>
+        <p class="note">
+          In the real app, this screen would use the OpenAI GPT API on a secure backend.
+          Here we simulate AI feedback locally for the PA3 prototype. Files are not sent
+          to any server in this demo.
+        </p>
+      </div>
+
+      <div id="feedback-container" class="card hidden feedback-card">
+        <div class="feedback-pill-row">
+          <span class="pill pill-primary">AI Feedback</span>
+          <span class="pill pill-muted">Demo Only</span>
+        </div>
+        <div id="feedback-text" class="feedback-text"></div>
+      </div>
+    </section>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

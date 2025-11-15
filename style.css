@@ -1,0 +1,187 @@
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #0f172a;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  color: #e5e7eb;
+}
+
+.app-shell {
+  width: 360px;
+  max-width: 95vw;
+  background: #020617;
+  border-radius: 18px;
+  padding: 16px 16px 24px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+}
+
+.app-header {
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.subtitle {
+  margin: 4px 0 0;
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.screen {
+  display: none;
+}
+
+.screen.active {
+  display: block;
+}
+
+h2 {
+  font-size: 1.1rem;
+  margin: 8px 0 12px;
+}
+
+.card {
+  background: #020617;
+  border-radius: 12px;
+  padding: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  margin-bottom: 12px;
+}
+
+label {
+  display: block;
+  font-size: 0.8rem;
+  margin-bottom: 8px;
+}
+
+input {
+  width: 100%;
+  margin-top: 4px;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #4b5563;
+  background: #020617;
+  color: #e5e7eb;
+  font-size: 0.85rem;
+  box-sizing: border-box;
+}
+
+input[type="file"] {
+  padding: 6px;
+  background: #020617;
+  border-radius: 999px;
+  border: 1px dashed #4b5563;
+  cursor: pointer;
+}
+
+button {
+  width: 100%;
+  margin-top: 10px;
+  padding: 9px;
+  border-radius: 999px;
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: #2563eb;
+  color: white;
+}
+
+button.secondary {
+  background: transparent;
+  border: 1px solid #4b5563;
+  color: #e5e7eb;
+}
+
+button.small {
+  width: auto;
+  padding: 6px 12px;
+  font-size: 0.8rem;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.error {
+  color: #f97373;
+  font-size: 0.75rem;
+  min-height: 1em;
+}
+
+.note {
+  font-size: 0.7rem;
+  color: #9ca3af;
+  margin-top: 8px;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 4px;
+}
+
+/* Feedback card styling */
+
+.feedback-card {
+  margin-top: 6px;
+  background: radial-gradient(circle at top, #0b1120 0, #020617 55%);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+}
+
+.feedback-pill-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.pill {
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  border: 1px solid transparent;
+}
+
+.pill-primary {
+  background: rgba(59, 130, 246, 0.15);
+  border-color: rgba(59, 130, 246, 0.8);
+}
+
+.pill-muted {
+  background: rgba(148, 163, 184, 0.15);
+  border-color: rgba(148, 163, 184, 0.8);
+}
+
+.feedback-text {
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.feedback-text h4 {
+  font-size: 0.85rem;
+  margin: 6px 0 4px;
+}
+
+.feedback-list {
+  padding-left: 18px;
+  margin: 0 0 4px;
+}
+
+.feedback-note {
+  font-size: 0.7rem;
+  color: #9ca3af;
+  margin-top: 6px;
+}
+
+.hidden {
+  display: none;
+}
