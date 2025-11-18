@@ -111,5 +111,14 @@ aiButton.addEventListener("click", () => {
   }, 1000);
 });
 
+// OPEN STUDY & SCHEDULE TOOLS (button)
+const openIntakeButton = document.getElementById("open-intake-button");
+
+if (openIntakeButton) {
+  openIntakeButton.addEventListener("click", () => {
+    showScreen("screen-intake");
+  });
+}
+
 // Initialize: show login screen
 showScreen("screen-login");

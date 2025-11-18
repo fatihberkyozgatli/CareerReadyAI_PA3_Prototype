@@ -64,6 +64,12 @@
         <p id="resume-error" class="error"></p>
 
         <button id="ai-feedback-button">Get AI Feedback</button>
+
+        <!-- Extra button to open the schedule/productivity tools -->
+        <button id="open-intake-button" class="secondary">
+          Open Study & Schedule Tools
+        </button>
+
         <p class="note">
           In the real app, this screen would use the OpenAI GPT API on a secure backend.
           Here we simulate AI feedback locally for the PA3 prototype. Files are not sent
@@ -79,146 +85,100 @@
         <div id="feedback-text" class="feedback-text"></div>
       </div>
     </section>
+
+    <!-- STUDY & SCHEDULE SETUP SCREEN -->
+    <section id="screen-intake" class="screen">
+      <div class="toolbar">
+        <!-- Returns the user to the Resume Upload screen -->
+        <button class="secondary small" id="back-to-resume">Back</button>
+      </div>
+
+      <h2>Study & Schedule Setup</h2>
+
+      <div class="card">
+        <label>
+          <input type="checkbox" id="consent-checkbox" />
+          I consent to sharing my schedule and assignments with the AI.
+        </label>
+
+        <label>
+          Weekly Schedule
+          <textarea
+            id="intake-schedule"
+            placeholder="Ex: Mon 3–5 library, Tue 2–4 dorm..."
+          ></textarea>
+        </label>
+
+        <label>
+          Study Locations
+          <textarea
+            id="intake-locations"
+            placeholder="Library, dorm, coffee shop, etc."
+          ></textarea>
+        </label>
+
+        <label>
+          Assignments
+          <textarea
+            id="intake-assignments"
+            placeholder="Ex: Math HW Wed, Essay Fri..."
+          ></textarea>
+        </label>
+
+        <p id="intake-error" class="error"></p>
+
+        <button id="submit-intake-button">Save & Continue</button>
+      </div>
+    </section>
+
+    <!-- AI OPPORTUNITY TIMING SCREEN -->
+    <section id="screen-opportunities" class="screen">
+      <div class="toolbar">
+        <button class="secondary small" id="back-to-intake">Back</button>
+      </div>
+
+      <h2>AI Opportunity Timing</h2>
+
+      <div class="card">
+        <p class="note">
+          AI analyzes your schedule to recommend the best time to work on internship or
+          scholarship applications.
+        </p>
+
+        <button id="generate-opportunity-button">Generate AI Timing</button>
+      </div>
+
+      <div id="opportunity-result" class="card hidden">
+        <h4>Your Optimal Time:</h4>
+        <p id="opportunity-text"></p>
+      </div>
+    </section>
+
+    <!-- WEEKLY EFFECTIVENESS REPORT SCREEN -->
+    <section id="screen-report" class="screen">
+      <div class="toolbar">
+        <button class="secondary small" id="back-to-opportunities">Back</button>
+      </div>
+
+      <h2>Weekly Effectiveness Report</h2>
+
+      <div class="card">
+        <canvas id="productivity-chart" width="300" height="200"></canvas>
+      </div>
+
+      <div class="card">
+        <h4>Most Productive Day</h4>
+        <p id="best-day"></p>
+
+        <h4>Best Study Environment</h4>
+        <p id="best-location"></p>
+      </div>
+    </section>
   </div>
-
-  /////
-  This will show the screens of the schedule productivity with AI help
-  <section id="screen-intake" class="screen">
-  
-  <!-- Will contain the "Back" button in the toolbar-->
-  <div class="toolbar">
-    <!-- This button returns the user to the Resume Upload screen -->
-    <button class="secondary small" id="back-to-resume">Back</button>
-  </div>
-
-  <!-- Screen Title -->
-  <h2>Study & Schedule Setup</h2>
-
-  <!-- Main card container holding all intake inputs -->
-  <div class="card">
-
-    <!-- WIll showcase the consent box for the user to check -->
-    <label>
-      <input type="checkbox" id="consent-checkbox" />
-      I consent to sharing my schedule and assignments with the AI.
-    </label>
-
-    <!-- Users weekly schedule input -->
-    <label>
-      Weekly Schedule
-      <!-- Will be using the example of library productivity -->
-      <textarea
-        id="intake-schedule"
-        placeholder="Ex: Mon 3–5 library, Tue 2–4 dorm..."
-      ></textarea>
-    </label>
-
-    <!-- the users study environments -->
-    <label>
-      Study Locations
-      <textarea
-        id="intake-locations"
-        placeholder="Library, dorm, coffee shop, etc."
-      ></textarea>
-    </label>
-
-    <!-- Users assignment deadlines -->
-    <label>
-      Assignments
-      <textarea
-        id="intake-assignments"
-        placeholder="Ex: Math HW Wed, Essay Fri..."
-      ></textarea>
-    </label>
-
-    <!-- Will display an error if there was no consent or incorrect input -->
-    <p id="intake-error" class="error"></p>
-
-    <!-- Button that saves input & moves user to Opportunities screen -->
-    <button id="submit-intake-button">Save & Continue</button>
-  </div>
-</section>
-////
-  This screen will use the users schedule then use AI for recommendations of applying to interships and scholarships
-<section id="screen-opportunities" class="screen">
-
-  <!-- Displays a"Back" button that will return the user to the Intake screen -->
-  <div class="toolbar">
-    <button class="secondary small" id="back-to-intake">Back</button>
-  </div>
-
-  <!-- Screen Title -->
-  <h2>AI Opportunity Timing</h2>
-
-  <!-- Input area explaining feature -->
-  <div class="card">
-    <p class="note">
-      AI analyzes users' schedules to recommend the best time to work on internship or scholarship applications.
-    </p>
-
-    <!-- Button that triggers the mock AI analysis -->
-    <button id="generate-opportunity-button">Generate AI Timing</button>
-  </div>
-
-  <!-- Reveals the result card to the user -->
-  <div id="opportunity-result" class="card hidden">
-
-    <!-- Label for the AI result -->
-    <h4>Your Optimal Time:</h4>
-
-    <!-- The AI-generated recommendation appears here -->
-    <p id="opportunity-text"></p>
-  </div>
-</section>
-
-/////
-
-  This will display the visual aids for the users to comprehend their productivity levels throughout the week
-
-  
-  <section id="screen-report" class="screen">
-
-  <!-- The toolbar with navigation back to the Opportunities screen -->
-  <div class="toolbar">
-    <button class="secondary small" id="back-to-opportunities">Back</button>
-  </div>
-
-  <!-- Screen Title -->
-  <h2>Weekly Effectiveness Report</h2>
-
-  <!-- Card containing bar chart visualization -->
-  <div class="card">
-    <!-- Canvas where the bar chart is drawn using JavaScript -->
-    <canvas id="productivity-chart" width="300" height="200"></canvas>
-
-    <!-- Comment:
-         The chart is drawn using the <canvas> API, and it visually represents productivity per weekday.
-    -->
-  </div>
-
-  <!-- The card summarizing the results -->
-  <div class="card">
-
-    <!-- Will display the most productive day -->
-    <h4>Most Productive Day</h4>
-    <p id="best-day"></p>
-    <!-- JS automatically fills this using max productivity value -->
-
-    <!-- The best study environment -->
-    <h4>Best Study Environment</h4>
-    <p id="best-location"></p>
-    <!-- JS fills this using weighted score (hours × productivity) -->
-  </div>
-</section>
-
-
-
-
-
 
   <script src="app.js"></script>
-  <script src="schedule.js"></script>        
-  <script src="opportunities.js"></script>   
-  <script src="report.js"></script>          
+  <script src="schedule.js"></script>
+  <script src="opportunities.js"></script>
+  <script src="report.js"></script>
 </body>
 </html>
