@@ -11,26 +11,46 @@
       <h1>Career Ready AI</h1>
       <p class="subtitle">Smart Career Feedback Assistant</p>
     </header>
+    
+<!-- LOGIN SCREEN -->
+<section id="screen-login" class="screen active">
+  <h2>Secure Login</h2>
+  <div class="card">
+    <p class="note small">
+      First time here? Enter an email + password and click <strong>Login</strong> —
+      we’ll create a local demo account in your browser.
+    </p>
 
-    <!-- LOGIN SCREEN -->
-    <section id="screen-login" class="screen active">
-      <h2>Secure Login</h2>
-      <div class="card">
-        <label>
-          Email
-          <input type="email" id="login-email" placeholder="student@university.edu" />
-        </label>
-        <label>
-          Password
-          <input type="password" id="login-password" placeholder="••••••••" />
-        </label>
-        <p id="login-error" class="error"></p>
-        <button id="login-button">Login</button>
-        <p class="note">
-          Demo note: In the final system, this would use Firebase Auth + 2FA.
-        </p>
-      </div>
-    </section>
+    <label>
+      Email
+      <input type="email" id="login-email" class="input" placeholder="student@university.edu" />
+    </label>
+
+    <label>
+      Password
+      <input type="password" id="login-password" class="input" placeholder="••••••••" />
+    </label>
+
+    <div class="login-meta-row">
+      <label class="checkbox-row">
+        <input type="checkbox" id="remember-me" />
+        <span>Remember this device</span>
+      </label>
+      <button type="button" id="forgot-password" class="link-button">
+        Forgot password?
+      </button>
+    </div>
+
+    <p id="login-error" class="error"></p>
+
+    <button id="login-button">Login</button>
+
+    <p class="note">
+      Demo only — account data is stored in your browser, not on a server.
+    </p>
+  </div>
+</section>
+
 
     <!-- 2FA SCREEN -->
     <section id="screen-2fa" class="screen">
