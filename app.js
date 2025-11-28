@@ -75,7 +75,7 @@ if (forgotPasswordBtn) {
 
     alert(
       `Demo only: in a real system we would email a reset link to ${email}. ` +
-        "For this prototype, your password stays the same as you originally set."
+        "For this prototype, your password stays the same as you originally set. (${password})"
     );
   });
 }
