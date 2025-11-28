@@ -13,39 +13,53 @@ const generateButton = document.getElementById("generate-opportunity-button");
 const opportunityResult = document.getElementById("opportunity-result");
 const opportunityText = document.getElementById("opportunity-text");
 
-// This code will try to simulate the AI logic
-function chooseBestTime(scheduleText) {
-  if (!scheduleText) {
-    return "Sunday afternoon — ideal period for applications.";
-  }
-
-  const lower = scheduleText.toLowerCase();
-
-  if (lower.includes("library")) {
-    return "Tuesday at 4 PM — strong library productivity window.";
-  }
-  if (lower.includes("morning")) {
-    return "Wednesday morning — your peak focus time.";
-  }
-  return "Sunday afternoon — ideal period for applications.";
-}
-
-// Simulating the behavior of the AI processing the input
+// AI Call
 if (generateButton) {
-  generateButton.addEventListener("click", () => {
+  generateButton.addEventListener("click", async () => {
+    // Guard: make sure schedule was saved
+    if (
+      !window.userSchedule ||
+      !window.userLocations ||
+      !window.userAssignments
+    ) {
+      opportunityText.textContent =
+        "Please go back and save your schedule first.";
+      opportunityResult.classList.remove("hidden");
+      return;
+    }
+
     generateButton.disabled = true;
     generateButton.textContent = "Analyzing...";
 
-    setTimeout(() => {
-      // userSchedule is set in schedule.js after the intake form is submitted
-      const result = chooseBestTime(userSchedule);
-      opportunityText.textContent = result;
+    try {
+      const response = await fetch("http://localhost:3000/api/schedule-advice", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          schedule: window.userSchedule,
+          locations: window.userLocations,
+          assignments: window.userAssignments,
+        }),
+      });
 
+      if (!response.ok) {
+        throw new Error("Schedule AI request failed");
+      }
+
+      const data = await response.json();
+      console.log("Schedule AI response:", data);
+
+      opportunityText.textContent = `${data.bestTime} — ${data.reason}`;
       opportunityResult.classList.remove("hidden");
-
+    } catch (err) {
+      console.error(err);
+      opportunityText.textContent =
+        "Sunday afternoon — ideal period for applications (fallback suggestion).";
+      opportunityResult.classList.remove("hidden");
+    } finally {
       generateButton.disabled = false;
       generateButton.textContent = "Generate AI Timing";
-    }, 900);
+    }
   });
 }
 

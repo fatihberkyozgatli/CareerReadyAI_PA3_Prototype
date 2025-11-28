@@ -55,12 +55,8 @@
 
       <h2>AI Resume Feedback</h2>
       <div class="card">
-        <label for="resume-file">Upload Resume (Demo)</label>
-        <input
-          type="file"
-          id="resume-file"
-          accept=".pdf,.doc,.docx,.txt"
-        />
+        <label for="resume-text">Paste Resume Text (Demo)</label>
+        <input type="text" id="resume-text" placeholder="Paste your resume text here.." />
         <p id="resume-error" class="error"></p>
 
         <button id="ai-feedback-button">Get AI Feedback</button>
@@ -71,9 +67,7 @@
         </button>
 
         <p class="note">
-          In the real app, this screen would use the OpenAI GPT API on a secure backend.
-          Here we simulate AI feedback locally for the PA3 prototype. Files are not sent
-          to any server in this demo.
+          Your text is not stored on any server.
         </p>
       </div>
 
@@ -100,29 +94,17 @@
           <input type="checkbox" id="consent-checkbox" />
           I consent to sharing my schedule and assignments with the AI.
         </label>
-
         <label>
           Weekly Schedule
-          <textarea
-            id="intake-schedule"
-            placeholder="Ex: Mon 3–5 library, Tue 2–4 dorm..."
-          ></textarea>
+        <input type="text" id="weekly-schedule" placeholder="Ex: Mon 3–5 library, Tue 2–4 dorm...." />
         </label>
-
         <label>
           Study Locations
-          <textarea
-            id="intake-locations"
-            placeholder="Library, dorm, coffee shop, etc."
-          ></textarea>
+        <input type="text" id="study-locations" placeholder="Ex: library, dorm, coffee shop..." />
         </label>
-
         <label>
           Assignments
-          <textarea
-            id="intake-assignments"
-            placeholder="Ex: Math HW Wed, Essay Fri..."
-          ></textarea>
+        <input type="text" id="intake-assignments" placeholder="Ex: Math HW Wed, Essay Fri..." />
         </label>
 
         <p id="intake-error" class="error"></p>
