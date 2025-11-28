@@ -66,8 +66,11 @@ if (forgotPasswordBtn) {
     }
 
     alert(
-      `Demo only: in a real system we would email a reset link to ${email}. ` +
-        "For this prototype, your password stays the same as you originally set. (${user.password})"
+      "Demo only – this is NOT a real password reset.\n\n" +
+        `In a real system, we would email a reset link to: ${stored.email}.\n\n` +
+        `For this prototype, your current demo password is:\n\n` +
+        `    "${stored.password}"\n\n` +
+        "You can clear your browser data to fully reset this demo account."
     );
   });
 }
