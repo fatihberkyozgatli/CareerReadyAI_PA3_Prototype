@@ -1,4 +1,5 @@
 // This screen will be able to simulate the role of AI in the schedule productivity
+const API_BASE = "https://careerreadyai-backend.onrender.com";
 
 // Back button
 const backToIntakeBtn = document.getElementById("back-to-intake");
@@ -32,7 +33,7 @@ if (generateButton) {
     generateButton.textContent = "Analyzing...";
 
     try {
-      const response = await fetch("http://localhost:3000/api/schedule-advice", {
+      const response = await fetch(`${API_BASE}/api/schedule-advice`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

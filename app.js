@@ -1,3 +1,5 @@
+const API_BASE = "https://careerreadyai-backend.onrender.com";
+
 // Helper: switch between screens
 function showScreen(id) {
   document.querySelectorAll(".screen").forEach((s) => s.classList.remove("active"));
@@ -77,7 +79,7 @@ aiButton.addEventListener("click", async () => {
   aiButton.textContent = "Asking AI...";
 
   try {
-    const resp = await fetch("http://localhost:3000/api/resume-feedback", {
+    const resp = await fetch(`${API_BASE}/api/resume-feedback`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
