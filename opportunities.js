@@ -1,5 +1,4 @@
 // This screen will be able to simulate the role of AI in the schedule productivity
-const API_BASE = "https://careerreadyai-backend.onrender.com";
 
 // Back button
 const backToIntakeBtn = document.getElementById("back-to-intake");
