@@ -122,21 +122,15 @@ button:disabled {
   margin-bottom: 4px;
 }
 
+/* Login meta row (for the Forgot password link) */
 .login-meta-row {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 8px;
+  justify-content: flex-end;
+  margin-top: 4px;
   margin-bottom: 4px;
-  font-size: 0.8rem;
 }
 
-.checkbox-row {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
+/* Small link-style button */
 .link-button {
   background: none;
   border: none;
@@ -145,9 +139,44 @@ button:disabled {
   color: #60a5fa;
   cursor: pointer;
 }
-
 .link-button:hover {
   text-decoration: underline;
+}
+
+/* Checkbox styling in Study & Schedule Setup */
+.checkbox-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 12px;
+  font-size: 0.85rem;
+  color: #e5e7eb;
+}
+
+.custom-checkbox {
+  position: relative;
+  width: 16px;
+  height: 16px;
+  appearance: none;
+  border: 2px solid #4b5563;
+  border-radius: 4px;
+  background: #020617;
+  cursor: pointer;
+  margin-top: 2px;
+}
+
+.custom-checkbox:checked {
+  border-color: #2563eb;
+  background: #2563eb;
+}
+
+.custom-checkbox:checked::after {
+  content: "✔";
+  position: absolute;
+  left: 2px;
+  top: -1px;
+  font-size: 11px;
+  color: #ffffff;
 }
 
 /* Feedback card styling */

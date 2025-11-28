@@ -2,12 +2,13 @@ const API_BASE = "https://careerreadyai-backend.onrender.com";
 
 // Helper: switch between screens
 function showScreen(id) {
-  document.querySelectorAll(".screen").forEach((s) => s.classList.remove("active"));
+  document.querySelectorAll(".screen").forEach((s) =>
+    s.classList.remove("active")
+  );
   document.getElementById(id).classList.add("active");
 }
 
 // Demo "account" stored entirely in localStorage (frontend-only fake login)
-
 const USER_KEY = "careerReadyAI.demoUser";
 
 function getDemoUser() {
@@ -19,10 +20,28 @@ function setDemoUser(user) {
   localStorage.setItem(USER_KEY, JSON.stringify(user));
 }
 
-// LOGIN LOGIC (frontend-only)
+/* ---------- DOM ELEMENTS ---------- */
+
 const loginButton = document.getElementById("login-button");
 const loginError = document.getElementById("login-error");
 const forgotPasswordBtn = document.getElementById("forgot-password");
+
+const verify2FAButton = document.getElementById("verify-2fa-button");
+const twofaError = document.getElementById("twofa-error");
+const backToLoginButton = document.getElementById("back-to-login-button");
+
+const logoutButton = document.getElementById("logout-button");
+
+const aiButton = document.getElementById("ai-feedback-button");
+const feedbackContainer = document.getElementById("feedback-container");
+const feedbackText = document.getElementById("feedback-text");
+const resumeTextInput = document.getElementById("resume-text");
+const resumeError = document.getElementById("resume-error");
+
+const openIntakeButton = document.getElementById("open-intake-button");
+const backToResumeButton = document.getElementById("back-to-resume");
+
+/* ---------- LOGIN LOGIC (frontend-only) ---------- */
 
 loginButton.addEventListener("click", () => {
   const email = document.getElementById("login-email").value.trim();
@@ -53,7 +72,8 @@ loginButton.addEventListener("click", () => {
   showScreen("screen-2fa");
 });
 
-// "Forgot password" is just a demo explanation
+/* ---------- FORGOT PASSWORD (demo only) ---------- */
+
 if (forgotPasswordBtn) {
   forgotPasswordBtn.addEventListener("click", () => {
     const email = document.getElementById("login-email").value.trim();
@@ -67,19 +87,15 @@ if (forgotPasswordBtn) {
 
     alert(
       "Demo only – this is NOT a real password reset.\n\n" +
-        `In a real system, we would email a reset link to: ${stored.email}.\n\n` +
-        `For this prototype, your current demo password is:\n\n` +
-        `    "${stored.password}"\n\n` +
+        `We would normally email a reset link to: ${user.email}.\n\n` +
+        "For this prototype, your current demo password is:\n\n" +
+        `    \"${user.password}\"\n\n` +
         "You can clear your browser data to fully reset this demo account."
     );
   });
 }
 
-// 2FA LOGIC (dummy: correct code = 123456)
-
-const verify2FAButton = document.getElementById("verify-2fa-button");
-const twofaError = document.getElementById("twofa-error");
-const backToLoginButton = document.getElementById("back-to-login-button");
+/* ---------- 2FA LOGIC (dummy: correct code = 123456) ---------- */
 
 verify2FAButton.addEventListener("click", () => {
   const code = document.getElementById("code-2fa").value.trim();
@@ -95,48 +111,23 @@ backToLoginButton.addEventListener("click", () => {
   showScreen("screen-login");
 });
 
-// LOGOUT
-document.getElementById("logout-button").addEventListener("click", () => {
+/* ---------- LOGOUT (clear fields + go back to login) ---------- */
+
+logoutButton.addEventListener("click", () => {
   document.getElementById("login-email").value = "";
   document.getElementById("login-password").value = "";
   document.getElementById("code-2fa").value = "";
 
-  // Clear resume + feedback UI
-  const resumeInput = document.getElementById("resume-text");
-  if (resumeInput) resumeInput.value = "";
-  const resumeError = document.getElementById("resume-error");
+  if (resumeTextInput) resumeTextInput.value = "";
   if (resumeError) resumeError.textContent = "";
-  const feedbackContainer = document.getElementById("feedback-container");
-  if (feedbackContainer) feedbackContainer.classList.add("hidden");
-  const feedbackText = document.getElementById("feedback-text");
   if (feedbackText) feedbackText.innerHTML = "";
+  if (feedbackContainer) feedbackContainer.classList.add("hidden");
 
   showScreen("screen-login");
 });
 
+/* ---------- AI RESUME FEEDBACK (via backend) ---------- */
 
-// LOGOUT
-document.getElementById("logout-button").addEventListener("click", () => {
-  document.getElementById("login-email").value = "";
-  document.getElementById("login-password").value = "";
-  document.getElementById("code-2fa").value = "";
-
-  resumeTextInput.value = "";
-  resumeError.textContent = "";
-  feedbackText.innerHTML = "";
-  feedbackContainer.classList.add("hidden");
-
-  showScreen("screen-login");
-});
-
-// AI FEEDBACK
-const aiButton = document.getElementById("ai-feedback-button");
-const feedbackContainer = document.getElementById("feedback-container");
-const feedbackText = document.getElementById("feedback-text");
-const resumeTextInput = document.getElementById("resume-text");
-const resumeError = document.getElementById("resume-error");
-
-// AI FEEDBACK (real GPT via backend)
 aiButton.addEventListener("click", async () => {
   const resumeText = resumeTextInput.value.trim();
 
@@ -161,7 +152,6 @@ aiButton.addEventListener("click", async () => {
     });
 
     const data = await resp.json();
-
     if (!resp.ok) {
       throw new Error(data.error || "Request failed.");
     }
@@ -178,8 +168,7 @@ aiButton.addEventListener("click", async () => {
   }
 });
 
-// OPEN STUDY & SCHEDULE TOOLS (button)
-const openIntakeButton = document.getElementById("open-intake-button");
+/* ---------- STUDY / SCHEDULE NAV ---------- */
 
 if (openIntakeButton) {
   openIntakeButton.addEventListener("click", () => {
@@ -187,14 +176,12 @@ if (openIntakeButton) {
   });
 }
 
-// BACK from Study & Schedule Setup → Resume screen
-const backToResumeButton = document.getElementById("back-to-resume");
 if (backToResumeButton) {
   backToResumeButton.addEventListener("click", () => {
     showScreen("screen-resume");
   });
 }
 
+/* ---------- INITIAL SCREEN ---------- */
 
-// Initialize: show login screen
 showScreen("screen-login");
