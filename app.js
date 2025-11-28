@@ -22,7 +22,6 @@ function setDemoUser(user) {
 // LOGIN LOGIC (frontend-only)
 const loginButton = document.getElementById("login-button");
 const loginError = document.getElementById("login-error");
-const rememberMeCheckbox = document.getElementById("remember-me");
 const forgotPasswordBtn = document.getElementById("forgot-password");
 
 loginButton.addEventListener("click", () => {
@@ -51,13 +50,6 @@ loginButton.addEventListener("click", () => {
     loginError.textContent = "";
   }
 
-  // Remember-me flag (still only in this browser)
-  if (rememberMeCheckbox && rememberMeCheckbox.checked) {
-    localStorage.setItem("careerReadyAI.rememberMe", "1");
-  } else {
-    localStorage.removeItem("careerReadyAI.rememberMe");
-  }
-
   showScreen("screen-2fa");
 });
 
@@ -75,7 +67,7 @@ if (forgotPasswordBtn) {
 
     alert(
       `Demo only: in a real system we would email a reset link to ${email}. ` +
-        "For this prototype, your password stays the same as you originally set. (${password})"
+        "For this prototype, your password stays the same as you originally set. (${user.password})"
     );
   });
 }
