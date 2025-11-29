@@ -2,8 +2,7 @@
 
 // Base URL for the backend API 
 
-const LOCAL_API_BASE = window.API_BASE || "http://localhost:3000";
-
+window.API_BASE = window.API_BASE || "http://localhost:3000";
 // Back to intake
 const backToIntakeBtn = document.getElementById("back-to-intake");
 if (backToIntakeBtn) {
@@ -39,7 +38,7 @@ if (generateButton) {
     generateButton.textContent = "Analyzing...";
 
     try {
-      const resp = await fetch(`${LOCAL_API_BASE}/api/schedule-advice`, {
+        const resp = await fetch(`${window.API_BASE}/api/schedule-advice`, ...)
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ schedule, locations, assignments }),
