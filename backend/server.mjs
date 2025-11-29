@@ -106,6 +106,7 @@ ${text}
 app.post("/api/schedule-advice", async (req, res) => {
   const { schedule, locations, assignments } = req.body;
 
+  // Make sure the data from the intake form was provided
   if (!schedule || !locations || !assignments) {
     return res
       .status(400)
@@ -141,16 +142,34 @@ on internships / scholarship applications.
       max_output_tokens: 300,
     });
 
+    // Get the raw text from the Responses API
     const raw =
       response.output_text ??
       (response.output &&
         response.output[0]?.content?.[0]?.text) ??
       "";
 
+    console.log("schedule-advice raw output:", raw);
+
     let parsed;
+
+    // First attempt: parse the raw text as JSON
     try {
       parsed = JSON.parse(raw);
     } catch (e) {
+      // Second attempt: try to extract just the JSON object from the text
+      const match = raw.match(/\{[\s\S]*\}/);
+      if (match) {
+        try {
+          parsed = JSON.parse(match[0]);
+        } catch (e2) {
+          console.error("Failed to parse extracted JSON block:", match[0]);
+        }
+      }
+    }
+
+    // If parsing still failed, return an error
+    if (!parsed) {
       console.error("Schedule JSON parse error, raw:", raw);
       return res
         .status(500)
@@ -173,8 +192,6 @@ on internships / scholarship applications.
     });
   }
 });
-
-
 
 
 //This next endpoint will help create a report that uses AI to maximize the efficiency of the student
