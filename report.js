@@ -1,5 +1,10 @@
+
 // report.js
 
+// Base URL for the backend API that matches the one in the server backend
+const API_BASE = "http://localhost:3000";
+
+// Back to opportunities screen
 const backToOppBtn = document.getElementById("back-to-opportunities");
 if (backToOppBtn) {
   backToOppBtn.addEventListener("click", () => {
@@ -7,122 +12,131 @@ if (backToOppBtn) {
   });
 }
 
+// Elements of the report
 const chartCanvas = document.getElementById("productivity-chart");
 const bestDayEl = document.getElementById("best-day");
 const bestLocationEl = document.getElementById("best-location");
-const summaryEl = document.getElementById("summary-text");
+const summaryEl = document.getElementById("report-summary");
 
-const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-const SCHEDULE_KEY = "careerReadyAI.schedulePayload";
+// Data that the API will fill 
+let productivityValues = [3, 7, 5, 8, 6, 2, 4];
+const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+let locationStats = {
+  library: { hours: 8, productivity: 7.5 },
+  dorm: { hours: 5, productivity: 5.2 },
+};
+let summaryText = "";
 
-function drawChart(values) {
-  if (!chartCanvas) return;
+// This will compute the stats and draw the bars
+function drawReport() {
+  if (!chartCanvas || !bestDayEl || !bestLocationEl) return;
+
   const ctx = chartCanvas.getContext("2d");
-  const width = chartCanvas.width;
-  const height = chartCanvas.height;
 
-  ctx.clearRect(0, 0, width, height);
+  // Will clear old chart
+  ctx.clearRect(0, 0, chartCanvas.width, chartCanvas.height);
 
-  const barWidth = 25;
-  const gap = 18;
-  const maxVal = Math.max(...values, 1);
+  // Choosing the bar color
+  ctx.fillStyle = "#3b82f6";
 
-  values.forEach((v, i) => {
-    const x = 30 + i * (barWidth + gap);
-    const barHeight = (v / maxVal) * (height - 40);
-    const y = height - barHeight - 10;
-
-    ctx.fillStyle = "#3b82f6"; // same blue as before
-    ctx.fillRect(x, y, barWidth, barHeight);
+  // Will create the seven bars for the days of the week for the visual
+  productivityValues.forEach((value, index) => {
+    ctx.fillRect(
+      30 + index * 38,  // x position
+      180 - value * 15, // y position (inverted)
+      25,               // bar width
+      value * 15        // bar height
+    );
   });
+
+  // Best day that was the most productive
+  const bestIndex = productivityValues.indexOf(Math.max(...productivityValues));
+  bestDayEl.textContent = days[bestIndex];
+
+  // Best location that takes productivity into account
+  const bestLoc = getBestLocation();
+  if (bestLoc) {
+    bestLocationEl.textContent =
+      bestLoc.charAt(0).toUpperCase() + bestLoc.slice(1);
+  }
+
+  // Summary text
+  if (summaryEl) {
+    summaryEl.textContent = summaryText || "";
+  }
 }
 
-function getBestLocationName(locationStats) {
-  if (!locationStats || typeof locationStats !== "object") return null;
-
-  let bestName = null;
+// will compute best location from locationStats
+function getBestLocation() {
+  let best = null;
   let bestScore = -Infinity;
 
-  for (const [name, data] of Object.entries(locationStats)) {
-    const hours = Number(data.hours ?? 0);
-    const productivity = Number(data.productivity ?? 0);
-    const score = hours * productivity;
+  for (const place in locationStats) {
+    const data = locationStats[place];
+    if (!data) continue;
 
+    const score = (data.hours || 0) * (data.productivity || 0);
     if (score > bestScore) {
       bestScore = score;
-      bestName = name;
+      best = place;
     }
   }
-
-  return bestName;
+  return best;
 }
 
-function loadSchedulePayload() {
-  try {
-    const raw = localStorage.getItem(SCHEDULE_KEY);
-    return raw ? JSON.parse(raw) : null;
-  } catch (e) {
-    console.error("Failed to read schedule payload:", e);
-    return null;
-  }
-}
+// must show a function used by opportunities.js when the user clicks
+window.loadWeeklyReport = async function () {
+  const schedule = window.userSchedule || "";
+  const locations = window.userLocations || "";
+  const assignments = window.userAssignments || "";
 
-async function loadWeeklyReport() {
-  if (!chartCanvas) return;
-
-  const payload = loadSchedulePayload();
-  if (!payload) {
-    summaryEl.textContent =
-      "No schedule data found. Please complete the Study & Schedule Setup first.";
-    // Optionally draw a static demo chart
-    const fallback = [3, 7, 5, 8, 6, 2, 4];
-    drawChart(fallback);
-    bestDayEl.textContent = "Thu";
-    bestLocationEl.textContent = "Library";
+  if (!schedule) {
+    // If worst comes to worst and the schedule was not provided,
+    // it will give a default answer
+    summaryText =
+      "Demo report: using a sample pattern because schedule data was not found.";
+    drawReport();
     return;
   }
-
-  summaryEl.textContent = "Generating AI report...";
 
   try {
     const resp = await fetch(`${API_BASE}/api/schedule-report`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
+      body: JSON.stringify({ schedule, locations, assignments }),
     });
 
     const data = await resp.json();
+
     if (!resp.ok) {
-      throw new Error(data.error || "Report request failed.");
+      throw new Error(data.error || "Request failed.");
     }
 
-    const values = data.productivityValues || [];
-    if (!Array.isArray(values) || values.length !== 7) {
-      throw new Error("AI did not return 7 productivity values.");
+    // If the AI values are valid, they will be used
+    if (
+      Array.isArray(data.productivityValues) &&
+      data.productivityValues.length === 7
+    ) {
+      productivityValues = data.productivityValues;
     }
 
-    drawChart(values);
+    if (data.locationStats && typeof data.locationStats === "object") {
+      locationStats = data.locationStats;
+    }
 
-    const maxIndex = values.indexOf(Math.max(...values));
-    bestDayEl.textContent = DAYS[maxIndex] || "";
+    summaryText =
+      data.summary ||
+      "Summary not provided. Using fallback visualization.";
 
-    const bestLoc = getBestLocationName(data.locationStats);
-    bestLocationEl.textContent = bestLoc
-      ? bestLoc.charAt(0).toUpperCase() + bestLoc.slice(1)
-      : "Not specified";
-
-    summaryEl.textContent = data.summary || "";
+    drawReport();
   } catch (err) {
-    console.error("Error loading weekly report:", err);
-    summaryEl.textContent =
-      "Could not load AI report. Showing a static demo instead.";
-
-    const fallback = [3, 7, 5, 8, 6, 2, 4];
-    drawChart(fallback);
-    bestDayEl.textContent = "Thu";
-    bestLocationEl.textContent = "Library";
+    console.error("loadWeeklyReport error:", err);
+    summaryText =
+      "Sorry, the AI report could not be loaded. Showing a sample weekly pattern instead.";
+    // Fallback data
+    drawReport();
   }
-}
+};
 
-// Expose to other scripts so opportunities.js can call it
-window.loadWeeklyReport = loadWeeklyReport;
+// Draw the report once when this script loads 
+drawReport();
