@@ -1,5 +1,9 @@
 // opportunities.js
 
+// Base URL for the backend API 
+
+const LOCAL_API_BASE = window.API_BASE || "http://localhost:3000";
+
 // Back to intake
 const backToIntakeBtn = document.getElementById("back-to-intake");
 if (backToIntakeBtn) {
@@ -8,11 +12,10 @@ if (backToIntakeBtn) {
   });
 }
 
-// Generate AI Timing
+// will generate AI Timing
 const generateButton = document.getElementById("generate-opportunity-button");
 const opportunityResult = document.getElementById("opportunity-result");
 const opportunityText = document.getElementById("opportunity-text");
-
 
 // Button to go to weekly report
 const viewReportButton = document.getElementById("view-report-button");
@@ -24,6 +27,7 @@ if (generateButton) {
     const locations = window.userLocations || "";
     const assignments = window.userAssignments || "";
 
+    // If the user skipped the intake screen
     if (!schedule || !locations || !assignments) {
       opportunityText.textContent =
         "Please complete the Study & Schedule Setup first.";
@@ -35,7 +39,7 @@ if (generateButton) {
     generateButton.textContent = "Analyzing...";
 
     try {
-      const resp = await fetch(`${API_BASE}/api/schedule-advice`, {
+      const resp = await fetch(`${LOCAL_API_BASE}/api/schedule-advice`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ schedule, locations, assignments }),
@@ -47,7 +51,7 @@ if (generateButton) {
         throw new Error(data.error || "Request failed.");
       }
 
-      // bestTime + reason come from server.mjs
+      // bestTime + reason come from server.js
       const bestTime = data.bestTime || "Sunday afternoon";
       const reason =
         data.reason ||
