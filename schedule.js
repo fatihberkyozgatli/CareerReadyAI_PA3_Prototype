@@ -6,13 +6,18 @@ window.userLocations = "";
 window.userAssignments = "";
 
 // Button + error area
+let lastScheduleData = null;        // shared with opportunities.js via window
+
+const consentCheckbox = document.getElementById("consent-checkbox");
+const weeklyScheduleInput = document.getElementById("weekly-schedule");
+const studyLocationsInput = document.getElementById("study-locations");
+const assignmentsInput = document.getElementById("intake-assignments");
 const submitIntakeButton = document.getElementById("submit-intake-button");
 const intakeError = document.getElementById("intake-error");
 
 if (submitIntakeButton) {
   submitIntakeButton.addEventListener("click", () => {
     const consentCheckbox = document.getElementById("consent-checkbox");
-
     const scheduleEl = document.getElementById("weekly-schedule");
     const locationsEl = document.getElementById("study-locations");
     const assignmentsEl = document.getElementById("intake-assignments");

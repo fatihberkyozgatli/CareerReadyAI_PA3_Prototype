@@ -13,6 +13,7 @@ const generateButton = document.getElementById("generate-opportunity-button");
 const opportunityResult = document.getElementById("opportunity-result");
 const opportunityText = document.getElementById("opportunity-text");
 
+
 // Button to go to weekly report
 const viewReportButton = document.getElementById("view-report-button");
 
