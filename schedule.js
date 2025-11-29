@@ -1,36 +1,16 @@
 // schedule.js
 
-// Globals so opportunities.js can use them
 window.userSchedule = "";
 window.userLocations = "";
 window.userAssignments = "";
+window.schedulePayload = null; // used by report.js
 
-// DOM elements
 const consentCheckbox = document.getElementById("consent-checkbox");
 const weeklyScheduleInput = document.getElementById("weekly-schedule");
 const studyLocationsInput = document.getElementById("study-locations");
 const assignmentsInput = document.getElementById("intake-assignments");
 const submitIntakeButton = document.getElementById("submit-intake-button");
 const intakeError = document.getElementById("intake-error");
-
-// Key shared with report.js
-const SCHEDULE_KEY = "careerReadyAI.schedulePayload";
-
-function saveSchedulePayload(schedule, locations, assignments) {
-  const payload = { schedule, locations, assignments };
-
-  // for opportunities.js
-  window.userSchedule = schedule;
-  window.userLocations = locations;
-  window.userAssignments = assignments;
-
-  // for report.js
-  try {
-    localStorage.setItem(SCHEDULE_KEY, JSON.stringify(payload));
-  } catch (e) {
-    console.error("Failed to save schedule payload:", e);
-  }
-}
 
 if (submitIntakeButton) {
   submitIntakeButton.addEventListener("click", () => {
@@ -60,10 +40,15 @@ if (submitIntakeButton) {
 
     intakeError.textContent = "";
 
-    // Save both to globals + localStorage
-    saveSchedulePayload(schedule, locations, assignments);
+    // Save to globals
+    window.userSchedule = schedule;
+    window.userLocations = locations;
+    window.userAssignments = assignments;
 
-    // Go to AI Opportunity Timing screen
+    // Payload used by the report
+    window.schedulePayload = { schedule, locations, assignments };
+
+    // Go to AI opportunity timing screen
     showScreen("screen-opportunities");
   });
 }
