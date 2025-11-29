@@ -1,6 +1,6 @@
-// This screen will be able to simulate the role of AI in the schedule productivity
+// opportunities.js
 
-// Back button
+// Back to intake
 const backToIntakeBtn = document.getElementById("back-to-intake");
 if (backToIntakeBtn) {
   backToIntakeBtn.addEventListener("click", () => {
@@ -8,22 +8,24 @@ if (backToIntakeBtn) {
   });
 }
 
-// Interactive elements of the app
+// Generate AI Timing
 const generateButton = document.getElementById("generate-opportunity-button");
 const opportunityResult = document.getElementById("opportunity-result");
 const opportunityText = document.getElementById("opportunity-text");
 
-// AI Call
+// Button to go to weekly report
+const viewReportButton = document.getElementById("view-report-button");
+
 if (generateButton) {
   generateButton.addEventListener("click", async () => {
-    // Guard: make sure schedule was saved
-    if (
-      !window.userSchedule ||
-      !window.userLocations ||
-      !window.userAssignments
-    ) {
+    // These are set in schedule.js
+    const schedule = window.userSchedule || "";
+    const locations = window.userLocations || "";
+    const assignments = window.userAssignments || "";
+
+    if (!schedule || !locations || !assignments) {
       opportunityText.textContent =
-        "Please go back and save your schedule first.";
+        "Please complete the Study & Schedule Setup first.";
       opportunityResult.classList.remove("hidden");
       return;
     }
@@ -32,29 +34,30 @@ if (generateButton) {
     generateButton.textContent = "Analyzing...";
 
     try {
-      const response = await fetch(`${API_BASE}/api/schedule-advice`, {
+      const resp = await fetch(`${API_BASE}/api/schedule-advice`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          schedule: window.userSchedule,
-          locations: window.userLocations,
-          assignments: window.userAssignments,
-        }),
+        body: JSON.stringify({ schedule, locations, assignments }),
       });
 
-      if (!response.ok) {
-        throw new Error("Schedule AI request failed");
+      const data = await resp.json();
+
+      if (!resp.ok) {
+        throw new Error(data.error || "Request failed.");
       }
 
-      const data = await response.json();
-      console.log("Schedule AI response:", data);
+      // bestTime + reason come from server.mjs
+      const bestTime = data.bestTime || "Sunday afternoon";
+      const reason =
+        data.reason ||
+        "This time has the fewest conflicts and is easy to turn into a habit.";
 
-      opportunityText.textContent = `${data.bestTime} — ${data.reason}`;
+      opportunityText.textContent = `${bestTime} — ${reason}`;
       opportunityResult.classList.remove("hidden");
     } catch (err) {
       console.error(err);
       opportunityText.textContent =
-        "Sunday afternoon — ideal period for applications (fallback suggestion).";
+        "Sorry, AI timing request failed. Falling back to a generic suggestion: Sunday afternoon — ideal period for applications.";
       opportunityResult.classList.remove("hidden");
     } finally {
       generateButton.disabled = false;
@@ -63,14 +66,12 @@ if (generateButton) {
   });
 }
 
-// Button to move to the Weekly Effectiveness Report screen
-const viewReportBtn = document.getElementById("view-report-button");
-if (viewReportBtn) {
-  viewReportBtn.addEventListener("click", () => {
+// and trigger the AI-driven report load
+if (viewReportButton) {
+  viewReportButton.addEventListener("click", () => {
     showScreen("screen-report");
-    // drawReport() is defined in report.js
-    if (typeof drawReport === "function") {
-      drawReport();
+    if (typeof window.loadWeeklyReport === "function") {
+      window.loadWeeklyReport();
     }
   });
 }

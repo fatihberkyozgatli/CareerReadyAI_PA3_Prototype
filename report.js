@@ -1,35 +1,31 @@
-// Will provide a button to go back to the AI application section
-const backToOppBtn = document.getElementById("back-to-opportunities");
+// report.js
 
+// Back to opportunities screen
+const backToOppBtn = document.getElementById("back-to-opportunities");
 if (backToOppBtn) {
   backToOppBtn.addEventListener("click", () => {
     showScreen("screen-opportunities");
   });
 }
 
-// Will provide the chart element
+// Elements
 const chartCanvas = document.getElementById("productivity-chart");
+const bestDayEl = document.getElementById("best-day");
+const bestLocationEl = document.getElementById("best-location");
+const summaryEl = document.getElementById("report-summary");
 
-// It will display the text that will be used in the summary
-const bestDay = document.getElementById("best-day");
-const bestLocation = document.getElementById("best-location");
-
-// Sample placeholder data.
-// Actual numbers would rely on ScheduleTracker and AI productivity stats.
-const productivityValues = [3, 7, 5, 8, 6, 2, 4];
-const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-
-// Example study locations with hours × productivity
-const locationStats = {
+// Data (will be filled from the API)
+let productivityValues = [3, 7, 5, 8, 6, 2, 4]; // fallback
+let days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+let locationStats = {
   library: { hours: 8, productivity: 7.5 },
   dorm: { hours: 5, productivity: 5.2 },
-  "coffee shop": { hours: 4, productivity: 6.0 },
-  "study lounge": { hours: 6, productivity: 6.8 },
 };
+let summaryText = "";
 
-// Will construct the bar chart and highlight most productive day
+// Draw the chart and computed stats
 function drawReport() {
-  if (!chartCanvas || !bestDay || !bestLocation) return;
+  if (!chartCanvas || !bestDayEl || !bestLocationEl) return;
 
   const ctx = chartCanvas.getContext("2d");
 
@@ -49,41 +45,91 @@ function drawReport() {
     );
   });
 
-  // Compute the best day of the week
+  // Best day
   const bestIndex = productivityValues.indexOf(Math.max(...productivityValues));
-  bestDay.textContent = days[bestIndex];
+  bestDayEl.textContent = days[bestIndex];
 
-  // Update best location
-  updateBestLocation();
+  // Best location (weighted hours * productivity)
+  const bestLoc = getBestLocation();
+  if (bestLoc) {
+    bestLocationEl.textContent =
+      bestLoc.charAt(0).toUpperCase() + bestLoc.slice(1);
+  }
+
+  // Summary text
+  if (summaryEl) {
+    summaryEl.textContent = summaryText || "";
+  }
 }
 
-// Calculate the most effective study location
+// Compute best location from locationStats
 function getBestLocation() {
   let best = null;
   let bestScore = -Infinity;
 
   for (const place in locationStats) {
     const data = locationStats[place];
+    if (!data) continue;
 
-    // Weighted effectiveness = hours * productivity
-    const score = data.hours * data.productivity;
-
+    const score = (data.hours || 0) * (data.productivity || 0);
     if (score > bestScore) {
       bestScore = score;
       best = place;
     }
   }
-
   return best;
 }
 
-// Update which location is the best
-function updateBestLocation() {
-  const best = getBestLocation();
-  if (!bestLocation || !best) return;
+// Expose a function used by opportunities.js when user clicks "View Weekly Report"
+window.loadWeeklyReport = async function () {
+  const schedule = window.userSchedule || "";
+  const locations = window.userLocations || "";
+  const assignments = window.userAssignments || "";
 
-  bestLocation.textContent = best.charAt(0).toUpperCase() + best.slice(1);
-}
+  if (!schedule) {
+    // If for some reason schedule isn't set, just draw fallback static chart
+    summaryText =
+      "Demo report: using a sample pattern because schedule data was not found.";
+    drawReport();
+    return;
+  }
 
-// Draw the report once when this script loads
+  try {
+    const resp = await fetch(`${API_BASE}/api/schedule-report`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ schedule, locations, assignments }),
+    });
+
+    const data = await resp.json();
+
+    if (!resp.ok) {
+      throw new Error(data.error || "Request failed.");
+    }
+
+    // Use AI values if valid, otherwise keep defaults
+    if (Array.isArray(data.productivityValues) &&
+        data.productivityValues.length === 7) {
+      productivityValues = data.productivityValues;
+    }
+
+    if (data.locationStats && typeof data.locationStats === "object") {
+      locationStats = data.locationStats;
+    }
+
+    summaryText =
+      data.summary ||
+      "Summary not provided. Using fallback visualization.";
+
+    drawReport();
+  } catch (err) {
+    console.error("loadWeeklyReport error:", err);
+    summaryText =
+      "Sorry, the AI report could not be loaded. Showing a sample weekly pattern instead.";
+    // fallback data
+    drawReport();
+  }
+};
+
+
 drawReport();
