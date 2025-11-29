@@ -1,5 +1,8 @@
 // report.js
 
+// Base URL for the backend API that matches the one in the server backend
+const API_BASE = "http://localhost:3000";
+
 // Back to opportunities screen
 const backToOppBtn = document.getElementById("back-to-opportunities");
 if (backToOppBtn) {
@@ -8,34 +11,34 @@ if (backToOppBtn) {
   });
 }
 
-// Elements
+// Elements of the report
 const chartCanvas = document.getElementById("productivity-chart");
 const bestDayEl = document.getElementById("best-day");
 const bestLocationEl = document.getElementById("best-location");
 const summaryEl = document.getElementById("report-summary");
 
-// Data (will be filled from the API)
-let productivityValues = [3, 7, 5, 8, 6, 2, 4]; // fallback
-let days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+// Data that the API will fill 
+let productivityValues = [3, 7, 5, 8, 6, 2, 4];
+const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 let locationStats = {
   library: { hours: 8, productivity: 7.5 },
   dorm: { hours: 5, productivity: 5.2 },
 };
 let summaryText = "";
 
-// Draw the chart and computed stats
+// This will compute the stats and draw the bars
 function drawReport() {
   if (!chartCanvas || !bestDayEl || !bestLocationEl) return;
 
   const ctx = chartCanvas.getContext("2d");
 
-  // Clear old chart
+  // Will clear old chart
   ctx.clearRect(0, 0, chartCanvas.width, chartCanvas.height);
 
-  // Bar color
+  // Choosing the bar color
   ctx.fillStyle = "#3b82f6";
 
-  // Create the seven bars for the days of the week
+  // Will create the seven bars for the days of the week for the visual
   productivityValues.forEach((value, index) => {
     ctx.fillRect(
       30 + index * 38,  // x position
@@ -45,11 +48,11 @@ function drawReport() {
     );
   });
 
-  // Best day
+  // Best day that was the most productive
   const bestIndex = productivityValues.indexOf(Math.max(...productivityValues));
   bestDayEl.textContent = days[bestIndex];
 
-  // Best location (weighted hours * productivity)
+  // Best location that takes productivity into account
   const bestLoc = getBestLocation();
   if (bestLoc) {
     bestLocationEl.textContent =
@@ -62,7 +65,7 @@ function drawReport() {
   }
 }
 
-// Compute best location from locationStats
+// will compute best location from locationStats
 function getBestLocation() {
   let best = null;
   let bestScore = -Infinity;
@@ -80,14 +83,15 @@ function getBestLocation() {
   return best;
 }
 
-// Expose a function used by opportunities.js when user clicks "View Weekly Report"
+// must show a function used by opportunities.js when the user clicks
 window.loadWeeklyReport = async function () {
   const schedule = window.userSchedule || "";
   const locations = window.userLocations || "";
   const assignments = window.userAssignments || "";
 
   if (!schedule) {
-    // If for some reason schedule isn't set, just draw fallback static chart
+    // If worst comes to worst and the schedule was not provided,
+    // it will give a default answer
     summaryText =
       "Demo report: using a sample pattern because schedule data was not found.";
     drawReport();
@@ -107,9 +111,11 @@ window.loadWeeklyReport = async function () {
       throw new Error(data.error || "Request failed.");
     }
 
-    // Use AI values if valid, otherwise keep defaults
-    if (Array.isArray(data.productivityValues) &&
-        data.productivityValues.length === 7) {
+    // If the AI values are valid, they will be used
+    if (
+      Array.isArray(data.productivityValues) &&
+      data.productivityValues.length === 7
+    ) {
       productivityValues = data.productivityValues;
     }
 
@@ -126,10 +132,10 @@ window.loadWeeklyReport = async function () {
     console.error("loadWeeklyReport error:", err);
     summaryText =
       "Sorry, the AI report could not be loaded. Showing a sample weekly pattern instead.";
-    // fallback data
+    // Fallback data
     drawReport();
   }
 };
 
-
+// Draw the report once when this script loads (
 drawReport();
