@@ -1,7 +1,7 @@
 // report.js
 
 // Base URL for the backend API that matches the one in the server backend
-const API_BASE = "http://localhost:3000";
+window.API_BASE = window.API_BASE || "http://localhost:3000";
 
 // Back to opportunities screen
 const backToOppBtn = document.getElementById("back-to-opportunities");
