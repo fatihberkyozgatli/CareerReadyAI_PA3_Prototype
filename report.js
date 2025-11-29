@@ -1,4 +1,3 @@
-
 // report.js
 
 // Base URL for the backend API that matches the one in the server backend
@@ -16,10 +15,11 @@ if (backToOppBtn) {
 const chartCanvas = document.getElementById("productivity-chart");
 const bestDayEl = document.getElementById("best-day");
 const bestLocationEl = document.getElementById("best-location");
-const summaryEl = document.getElementById("report-summary");
+//tracking a change
+const summaryEl = document.getElementById("summary-text");
 
 // Data that the API will fill 
-let productivityValues = [3, 7, 5, 8, 6, 2, 4];
+let productivityValues = [3, 7, 5, 8, 6, 2, 4]; // sample default
 const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 let locationStats = {
   library: { hours: 8, productivity: 7.5 },
@@ -29,7 +29,10 @@ let summaryText = "";
 
 // This will compute the stats and draw the bars
 function drawReport() {
-  if (!chartCanvas || !bestDayEl || !bestLocationEl) return;
+  if (!chartCanvas || !bestDayEl || !bestLocationEl) {
+    console.warn("Report elements missing:", { chartCanvas, bestDayEl, bestLocationEl });
+    return;
+  }
 
   const ctx = chartCanvas.getContext("2d");
 
